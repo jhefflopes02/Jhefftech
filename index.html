@@ -107,7 +107,6 @@
         let isProcessing = false;
         let photoBuffer = null;
 
-        // FUNÇÃO PARA ALTERNAR ÍCONE/TEXTO OFFLINE
         function updateOnlineStatus() {
             if (navigator.onLine) {
                 connectionStatus.innerHTML = '<span class="material-symbols-outlined text-blue-500" style="font-size: 45px;">location_on</span>';
@@ -183,31 +182,42 @@
                 isProcessing = true;
                 validateForm();
                 statusLabel.innerText = "Conectando ao GPS...";
+                
                 const pos = await new Promise((res, rej) => {
                     const startTime = Date.now();
+                    let watchId = null;
+
+                    const cleanup = () => { if (watchId) navigator.geolocation.clearWatch(watchId); };
+
                     const tryGetLocation = () => {
-                        if (withPhoto && !photoBuffer) {
-                            rej(new Error("Cancelado"));
-                            return;
-                        }
-                        navigator.geolocation.getCurrentPosition(
-                            (p) => res(p),
+                        // watchPosition para manter o GPS ativo e buscar a melhor precisão
+                        watchId = navigator.geolocation.watchPosition(
+                            (p) => {
+                                // Se a precisão for excelente (até 20m), resolve imediatamente
+                                if (p.coords.accuracy <= 20) {
+                                    cleanup();
+                                    res(p);
+                                }
+                                // Se bater 15 segundos, envia a melhor posição obtida até agora
+                                if (Date.now() - startTime > 15000) {
+                                    cleanup();
+                                    res(p);
+                                }
+                            },
                             (err) => {
-                                const elapsed = Date.now() - startTime;
-                                if (elapsed < 20000) {
-                                    setTimeout(tryGetLocation, 1000);
-                                } else {
+                                if (Date.now() - startTime > 15000) {
+                                    cleanup();
                                     rej(new Error("Timeout"));
                                 }
                             },
-                            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                         );
                     };
                     tryGetLocation();
                 });
 
-                if (pos.coords.accuracy > 15) {
-                    alert(`Precisão baixa (${Math.round(pos.coords.accuracy)}m). Tente local aberto.`);
+                if (pos.coords.accuracy > 45) {
+                    alert(`Sinal fraco (${Math.round(pos.coords.accuracy)}m). Vá para um local aberto.`);
                     isProcessing = false;
                     validateForm();
                     return;
@@ -237,7 +247,7 @@
                 isProcessing = false;
             } catch (e) {
                 if (e.message !== "Cancelado") {
-                    alert("Erro no GPS ou envio.");
+                    alert("Erro no GPS: Ative a 'Localização Precisa' nos Ajustes do iPhone.");
                 }
                 isProcessing = false;
                 validateForm();
