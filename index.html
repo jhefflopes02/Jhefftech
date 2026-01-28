@@ -159,7 +159,7 @@
                     validateForm();
                     return;
                 }
-                const mapsUrl = `http://googleusercontent.com/maps.google.com/${pos.coords.latitude},${pos.coords.longitude}`;
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
                 if (name === "0") {
                     await navigator.clipboard.writeText(mapsUrl);
                     clearAndResetAll();
