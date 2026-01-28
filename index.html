@@ -33,14 +33,17 @@
             width: 100%; 
             max-width: 400px; 
             margin: 0 auto; 
-            padding: 20px 20px 30px 20px; /* Aumentei o padding inferior aqui */
+            padding: 20px 20px 30px 20px;
         }
     </style>
 </head>
 <body>
     <div class="main-container">
         <div class="flex flex-col items-center mt-2 mb-4">
-            <span class="material-symbols-outlined text-blue-500" style="font-size: 45px;">location_on</span>
+            <div id="connectionStatus" class="flex items-center justify-center h-[50px]">
+                <span class="material-symbols-outlined text-blue-500" style="font-size: 45px;">location_on</span>
+            </div>
+            
             <h1 class="text-3xl font-bold tracking-tight mt-1">JT GPS</h1>
             <p class="text-zinc-500 text-[10px] uppercase tracking-widest">Localizações</p>
         </div>
@@ -99,8 +102,23 @@
         const photoPreview = document.getElementById('photoPreview');
         const previewImg = document.getElementById('previewImg');
         const btnFoto = document.getElementById('btnFoto');
+        const connectionStatus = document.getElementById('connectionStatus');
+        
         let isProcessing = false;
         let photoBuffer = null;
+
+        // FUNÇÃO PARA ALTERNAR ÍCONE/TEXTO OFFLINE
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                connectionStatus.innerHTML = '<span class="material-symbols-outlined text-blue-500" style="font-size: 45px;">location_on</span>';
+            } else {
+                connectionStatus.innerHTML = '<span class="text-red-600 font-bold text-xs uppercase tracking-tighter">(offline)</span>';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
 
         function validateForm() {
             const val = clientInput.value.trim();
