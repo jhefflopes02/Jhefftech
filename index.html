@@ -77,14 +77,13 @@
             </div>
         </div>
 
-        <div class="mt-6 text-center space-y-4 pb-4"> <div id="statusLabel" class="text-blue-500 font-bold text-[10px] h-4 uppercase tracking-widest"></div>
-            
+        <div class="mt-6 text-center space-y-4 pb-4">
+            <div id="statusLabel" class="text-blue-500 font-bold text-[10px] h-4 uppercase tracking-widest"></div>
             <div class="flex flex-col items-center gap-3">
                 <div class="opacity-40">
                     <p class="text-[8px] text-zinc-500 uppercase">Desenvolvido por:</p>
                     <p class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest">Jheff Lopes</p>
                 </div>
-                
                 <button onclick="handleExit()" class="btn-active bg-[#ff3b30] text-white px-12 h-10 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-lg">
                     SAIR
                 </button>
@@ -186,19 +185,14 @@
                 const pos = await new Promise((res, rej) => {
                     const startTime = Date.now();
                     let watchId = null;
-
                     const cleanup = () => { if (watchId) navigator.geolocation.clearWatch(watchId); };
-
                     const tryGetLocation = () => {
-                        // watchPosition para manter o GPS ativo e buscar a melhor precisão
                         watchId = navigator.geolocation.watchPosition(
                             (p) => {
-                                // Se a precisão for excelente (até 20m), resolve imediatamente
                                 if (p.coords.accuracy <= 20) {
                                     cleanup();
                                     res(p);
                                 }
-                                // Se bater 15 segundos, envia a melhor posição obtida até agora
                                 if (Date.now() - startTime > 15000) {
                                     cleanup();
                                     res(p);
@@ -235,6 +229,10 @@
                 let message = `CLIENTE: ${name.toUpperCase()}\n\n`;
                 if (obs) message += `OBS:\n${obs.toUpperCase()}\n\n`;
                 message += mapsUrl;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(message).catch(() => {});
+                }
 
                 if (withPhoto && navigator.share && file) {
                     const shareFile = new File([file], "gps_jt.jpg", { type: "image/jpeg" });
