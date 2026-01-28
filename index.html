@@ -138,7 +138,10 @@
         }
 
         function clearStoredPhoto() {
-            if(previewImg.src) URL.revokeObjectURL(previewImg.src);
+            if(previewImg.src) {
+                URL.revokeObjectURL(previewImg.src);
+                previewImg.src = "";
+            }
             photoBuffer = null;
             cameraInput.value = "";
             photoPreview.classList.add('hidden');
@@ -165,6 +168,7 @@
         cameraInput.onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
+                if (previewImg.src) URL.revokeObjectURL(previewImg.src);
                 photoBuffer = file;
                 previewImg.src = URL.createObjectURL(file);
                 photoPreview.classList.remove('hidden');
@@ -230,6 +234,7 @@
                 if (obs) message += `OBS:\n${obs.toUpperCase()}\n\n`;
                 message += mapsUrl;
 
+                // Cópia silenciosa para a área de transferência
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     await navigator.clipboard.writeText(message).catch(() => {});
                 }
@@ -244,9 +249,6 @@
                 }
                 isProcessing = false;
             } catch (e) {
-                if (e.message !== "Cancelado") {
-                    alert("Erro ao obter a localização.");
-                }
                 isProcessing = false;
                 validateForm();
             }
@@ -254,7 +256,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js');
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
             });
         }
     </script>
