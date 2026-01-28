@@ -12,58 +12,85 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" />
     <style>
-        body { background-color: #000000; color: white; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; min-height: 100dvh; display: flex; flex-direction: column; }
-        .input-dark { background-color: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 12px; color: white; padding: 14px; font-size: 16px; }
+        body { 
+            background-color: #000000; 
+            color: white; 
+            font-family: -apple-system, sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            height: 100dvh; 
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-dark { background-color: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 12px; color: white; padding: 12px; font-size: 16px; }
         button:disabled { opacity: 0.2; cursor: not-allowed; }
         .btn-active:active:not(:disabled) { transform: scale(0.96); opacity: 0.8; }
-        .main-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; max-width: 400px; margin: 0 auto; padding: 20px; }
+        
+        .main-container { 
+            flex: 1;
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+            max-width: 400px; 
+            margin: 0 auto; 
+            padding: 20px 20px 30px 20px; /* Aumentei o padding inferior aqui */
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <div class="flex flex-col items-center mb-8">
-            <span class="material-symbols-outlined text-blue-500" style="font-size: 60px;">location_on</span>
-            <h1 class="text-4xl font-bold tracking-tight mt-2">JT GPS</h1>
-            <p class="text-zinc-500 text-sm uppercase tracking-widest">Localizações</p>
+        <div class="flex flex-col items-center mt-2 mb-4">
+            <span class="material-symbols-outlined text-blue-500" style="font-size: 45px;">location_on</span>
+            <h1 class="text-3xl font-bold tracking-tight mt-1">JT GPS</h1>
+            <p class="text-zinc-500 text-[10px] uppercase tracking-widest">Localizações</p>
         </div>
-        <div class="space-y-5 w-full">
-            <div class="flex flex-col gap-2">
-                <label class="text-zinc-400 text-xs font-bold ml-1 uppercase">Cliente:</label>
+
+        <div class="flex-grow flex flex-col justify-center space-y-4 w-full">
+            <div class="flex flex-col gap-1">
+                <label class="text-zinc-400 text-[10px] font-bold ml-1 uppercase">Cliente:</label>
                 <input type="text" id="clientName" placeholder="Nome do cliente" class="input-dark w-full outline-none focus:border-zinc-500" oninput="validateForm()">
             </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-zinc-400 text-xs font-bold ml-1 uppercase">Observações:</label>
-                <textarea id="observations" rows="2" placeholder="Digite a observação" class="input-dark w-full outline-none focus:border-zinc-500 resize-none" oninput="validateForm()"></textarea>
+            <div class="flex flex-col gap-1">
+                <label class="text-zinc-400 text-[10px] font-bold ml-1 uppercase">Observações:</label>
+                <textarea id="observations" rows="2" placeholder="(Opcional)" class="input-dark w-full outline-none focus:border-zinc-500 resize-none" oninput="validateForm()"></textarea>
             </div>
-            <div id="photoPreview" class="hidden flex flex-col items-center gap-2 bg-[#1c1c1e] p-3 rounded-xl border border-zinc-800">
-                <div class="relative w-24 h-28">
+
+            <div id="photoPreview" class="hidden flex flex-col items-center gap-2 bg-[#1c1c1e] p-2 rounded-xl border border-zinc-800">
+                <div class="relative w-20 h-24">
                     <img id="previewImg" class="w-full h-full object-cover rounded-lg border border-zinc-700">
-                    <button onclick="clearStoredPhoto()" class="absolute -top-2 -right-2 bg-red-600 rounded-full w-7 h-7 flex items-center justify-center shadow-lg">
-                        <span class="material-symbols-outlined text-white text-[16px]">close</span>
+                    <button onclick="clearStoredPhoto()" class="absolute -top-2 -right-2 bg-red-600 rounded-full w-6 h-6 flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined text-white text-[14px]">close</span>
                     </button>
                 </div>
                 <div id="gpsLoadingAnim" class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Aguardando sinal estável...</span>
+                    <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">Sinal estável...</span>
                 </div>
             </div>
-            <div class="flex flex-col gap-4 pt-2">
-                <button id="btnObter" onclick="startProcess(false)" disabled class="btn-active w-full h-16 bg-[#007aff] text-white rounded-2xl font-bold text-xl shadow-lg">COLETAR</button>
-                <button id="btnFoto" onclick="handlePhotoButton()" disabled class="btn-active w-full h-16 bg-[#34c759] text-white rounded-2xl font-bold text-xl shadow-lg">COLETAR COM FOTO</button>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <button id="btnObter" onclick="startProcess(false)" disabled class="btn-active w-full h-14 bg-[#007aff] text-white rounded-2xl font-bold text-lg shadow-lg">COLETAR</button>
+                <button id="btnFoto" onclick="handlePhotoButton()" disabled class="btn-active w-full h-14 bg-[#34c759] text-white rounded-2xl font-bold text-lg shadow-lg">COLETAR COM FOTO</button>
             </div>
         </div>
-        <div class="mt-8 text-center space-y-4">
-            <div id="statusLabel" class="text-blue-500 font-bold text-xs h-4 uppercase tracking-widest"></div>
-            <div class="pt-2">
-                <p class="text-[10px] text-zinc-600 uppercase">Desenvolvido por:</p>
-                <p class="text-xs text-zinc-400 font-bold uppercase tracking-widest">Jheff Lopes</p>
+
+        <div class="mt-6 text-center space-y-4 pb-4"> <div id="statusLabel" class="text-blue-500 font-bold text-[10px] h-4 uppercase tracking-widest"></div>
+            
+            <div class="flex flex-col items-center gap-3">
+                <div class="opacity-40">
+                    <p class="text-[8px] text-zinc-500 uppercase">Desenvolvido por:</p>
+                    <p class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest">Jheff Lopes</p>
+                </div>
+                
+                <button onclick="handleExit()" class="btn-active bg-[#ff3b30] text-white px-12 h-10 rounded-full font-bold text-[10px] uppercase tracking-widest shadow-lg">
+                    SAIR
+                </button>
             </div>
         </div>
     </div>
-    <div class="p-6 flex justify-center">
-        <button onclick="handleExit()" class="btn-active bg-[#ff3b30] text-white px-14 h-11 rounded-full font-bold text-xs uppercase tracking-widest">Sair</button>
-    </div>
+
     <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
+
     <script>
         const clientInput = document.getElementById('clientName');
         const obsInput = document.getElementById('observations');
@@ -74,6 +101,7 @@
         const btnFoto = document.getElementById('btnFoto');
         let isProcessing = false;
         let photoBuffer = null;
+
         function validateForm() {
             const val = clientInput.value.trim();
             const hasText = val.length > 0;
@@ -87,10 +115,12 @@
                 btnFoto.classList.replace('bg-[#ff9500]', 'bg-[#34c759]');
             }
         }
+
         function handlePhotoButton() {
             if (photoBuffer) startProcess(true, photoBuffer);
             else cameraInput.click();
         }
+
         function clearStoredPhoto() {
             if(previewImg.src) URL.revokeObjectURL(previewImg.src);
             photoBuffer = null;
@@ -99,6 +129,7 @@
             statusLabel.innerText = "";
             validateForm();
         }
+
         function clearAndResetAll() {
             clearStoredPhoto();
             clientInput.value = "";
@@ -108,11 +139,13 @@
             validateForm();
             statusLabel.innerText = "";
         }
+
         function handleExit() {
             clearAndResetAll();
             window.close();
             setTimeout(() => { window.location.href = "about:blank"; }, 100);
         }
+
         cameraInput.onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -123,6 +156,7 @@
                 startProcess(true, file);
             }
         };
+
         async function startProcess(withPhoto, file = null) {
             if (isProcessing) return;
             const name = clientInput.value.trim();
@@ -153,22 +187,27 @@
                     };
                     tryGetLocation();
                 });
+
                 if (pos.coords.accuracy > 15) {
                     alert(`Precisão baixa (${Math.round(pos.coords.accuracy)}m). Tente local aberto.`);
                     isProcessing = false;
                     validateForm();
                     return;
                 }
+
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+                
                 if (name === "0") {
                     await navigator.clipboard.writeText(mapsUrl);
                     clearAndResetAll();
                     isProcessing = false;
                     return;
                 }
+
                 let message = `CLIENTE: ${name.toUpperCase()}\n\n`;
                 if (obs) message += `OBS:\n${obs.toUpperCase()}\n\n`;
                 message += mapsUrl;
+
                 if (withPhoto && navigator.share && file) {
                     const shareFile = new File([file], "gps_jt.jpg", { type: "image/jpeg" });
                     await navigator.share({ files: [shareFile], text: message });
@@ -180,12 +219,13 @@
                 isProcessing = false;
             } catch (e) {
                 if (e.message !== "Cancelado") {
-                    alert("O GPS não respondeu a tempo. A foto ainda está salva, tente clicar em REENVIAR.");
+                    alert("Erro no GPS ou envio.");
                 }
                 isProcessing = false;
                 validateForm();
             }
         }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js');
